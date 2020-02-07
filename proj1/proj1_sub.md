@@ -47,4 +47,65 @@ Valgrind Output:
 
 Basically, the `fgets_enhanced()` function is allocating memory that is never freed. It returns a pointer to the heap-allocated string (for the name of the node) which is never freed by the `delete_node()` function.
 
-Fixing this was fairly simple, before the call to `free(temp)` we need to also call `free(temp->str)`. 
+Fixing this was fairly simple, before the call to `free(temp)` we need to also call `free(temp->str)`.
+
+### Part B
+
+Valgrind Output:
+
+```
+==32240== Invalid read of size 8
+==32240==    at 0x109431: delete_all (sll_fixed.c:106)
+==32240==    by 0x109A70: main (sll_fixed.c:327)
+==32240==  Address 0x4a62920 is 16 bytes inside a block of size 24 free'd
+==32240==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==32240==    by 0x109453: delete_all (sll_fixed.c:109)
+==32240==    by 0x109A2C: main (sll_fixed.c:314)
+==32240==  Block was alloc'd at
+==32240==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==32240==    by 0x10971F: append (sll_fixed.c:209)
+==32240==    by 0x10992F: main (sll_fixed.c:281)
+==32240==
+==32240== Invalid read of size 8
+==32240==    at 0x10943D: delete_all (sll_fixed.c:108)
+==32240==    by 0x109A70: main (sll_fixed.c:327)
+==32240==  Address 0x4a62910 is 0 bytes inside a block of size 24 free'd
+==32240==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==32240==    by 0x109453: delete_all (sll_fixed.c:109)
+==32240==    by 0x109A2C: main (sll_fixed.c:314)
+==32240==  Block was alloc'd at
+==32240==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==32240==    by 0x10971F: append (sll_fixed.c:209)
+==32240==    by 0x10992F: main (sll_fixed.c:281)
+==32240==
+==32240== Invalid free() / delete / delete[] / realloc()
+==32240==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==32240==    by 0x109447: delete_all (sll_fixed.c:108)
+==32240==    by 0x109A70: main (sll_fixed.c:327)
+==32240==  Address 0x4a628c0 is 0 bytes inside a block of size 5 free'd
+==32240==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==32240==    by 0x109447: delete_all (sll_fixed.c:108)
+==32240==    by 0x109A2C: main (sll_fixed.c:314)
+==32240==  Block was alloc'd at
+==32240==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==32240==    by 0x10921D: fgets_enhanced (sll_fixed.c:29)
+==32240==    by 0x10991D: main (sll_fixed.c:281)
+==32240==
+==32240== Invalid free() / delete / delete[] / realloc()
+==32240==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==32240==    by 0x109453: delete_all (sll_fixed.c:109)
+==32240==    by 0x109A70: main (sll_fixed.c:327)
+==32240==  Address 0x4a62910 is 0 bytes inside a block of size 24 free'd
+==32240==    at 0x48369AB: free (vg_replace_malloc.c:530)
+==32240==    by 0x109453: delete_all (sll_fixed.c:109)
+==32240==    by 0x109A2C: main (sll_fixed.c:314)
+==32240==  Block was alloc'd at
+==32240==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==32240==    by 0x10971F: append (sll_fixed.c:209)
+==32240==    by 0x10992F: main (sll_fixed.c:281)
+==32240==
+```
+
+Note that we get the same error result regardless of running the edit operation or not, so that doesn't appear to be the issue.
+
+When the exit command is run, exit calls `delete_all()` again. However, `delete_all()` fails to set the global head pointer `p` to NULL, so it results in the linked list being double freed. This is fixed by simply setting `p = NULL` at the end of the `delete_all()` function.
