@@ -24,7 +24,9 @@ char *fgets_enhanced(FILE *f)
     char *s;
     char *temp;
     int buffersize = chunksize+1;
-    char *nPos;
+
+    // Fix for Q2 (c)
+    char *nPos = NULL;
     
     s = malloc(buffersize);    
     if (s == NULL)
@@ -62,7 +64,12 @@ char *fgets_enhanced(FILE *f)
         }
     }
     /* ensure that we zero-terminate the returned buffer */
-    s[nPos-s] = 0;
+    // Fix for Q2 (c)
+    if (nPos == NULL) {
+        s[0] = 0;
+    } else {
+        s[nPos-s] = 0;
+    }
     return s;
 }
 
@@ -270,7 +277,14 @@ int main()
         printf("[(i)nsert,(d)elete,delete (a)ll,d(u)plicate,(e)dit,(p)rint,e(x)it]:");
 
         char c;
-        scanf("%s",&c); /* ENTER A VALUE FOR SWITCH */
+        int count = scanf("%s",&c); /* ENTER A VALUE FOR SWITCH */
+
+        // Fix for Q2 (c)
+        if (count == EOF) {
+            delete_all();
+            printf("Input stream closed.\n");
+            return 1;
+        }
 
         switch (tolower(c))
         {

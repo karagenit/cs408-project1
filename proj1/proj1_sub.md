@@ -109,3 +109,66 @@ Valgrind Output:
 Note that we get the same error result regardless of running the edit operation or not, so that doesn't appear to be the issue.
 
 When the exit command is run, exit calls `delete_all()` again. However, `delete_all()` fails to set the global head pointer `p` to NULL, so it results in the linked list being double freed. This is fixed by simply setting `p = NULL` at the end of the `delete_all()` function.
+
+### Part C
+
+Test Case:
+
+```
+[(i)nsert,(d)elete,delete (a)ll,d(u)plicate,(e)dit,(p)rint,e(x)it]:i
+enter the tel:>100
+enter the name:>[Ctrl+D]
+```
+
+Note: on \*nix the `[Ctrl+D]` key combination sends an End of Transmission (EOT) character, ASCII value (0x04) - a different key combination may be necessary on different operating systems.
+
+Valgrind Output:
+
+```
+fgets returned NULL
+==29155== Use of uninitialised value of size 8
+==29155==    at 0x109354: fgets_enhanced (sll_fixed.c:65)
+==29155==    by 0x109928: main (sll_fixed.c:284)
+==29155==
+==29155== Invalid write of size 1
+==29155==    at 0x109354: fgets_enhanced (sll_fixed.c:65)
+==29155==    by 0x109928: main (sll_fixed.c:284)
+==29155==  Address 0xf0b0ff is not stack'd, malloc'd or (recently) free'd
+==29155==
+==29155==
+==29155== Process terminating with default action of signal 11 (SIGSEGV)
+==29155==  Access not within mapped region at address 0xF0B0FF
+==29155==    at 0x109354: fgets_enhanced (sll_fixed.c:65)
+==29155==    by 0x109928: main (sll_fixed.c:284)
+==29155==  If you believe this happened as a result of a stack
+==29155==  overflow in your program's main thread (unlikely but
+==29155==  possible), you can try to increase the size of the
+==29155==  main thread stack using the --main-stacksize= flag.
+==29155==  The main thread stack size used in this run was 8388608.
+==29155==
+==29155== HEAP SUMMARY:
+==29155==     in use at exit: 5 bytes in 1 blocks
+==29155==   total heap usage: 3 allocs, 2 frees, 2,053 bytes allocated
+==29155==
+==29155== LEAK SUMMARY:
+==29155==    definitely lost: 0 bytes in 0 blocks
+==29155==    indirectly lost: 0 bytes in 0 blocks
+==29155==      possibly lost: 0 bytes in 0 blocks
+==29155==    still reachable: 5 bytes in 1 blocks
+==29155==         suppressed: 0 bytes in 0 blocks
+==29155== Reachable blocks (those to which a pointer was found) are not shown.
+==29155== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==29155==
+==29155== For counts of detected and suppressed errors, rerun with: -v
+==29155== Use --track-origins=yes to see where uninitialised values come from
+==29155== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+Segmentation fault
+```
+
+By pressing `[Ctrl+D]` before typing any input, we force `fgets()` to return `NULL` upon its first call inside `fgets_enhanced()`. Thus, it skips the majority of the function (contained within the `else` block after checking whether `fgets()` returned `NULL`). Execution reaches the line `s[nPos-s] = 0;` however at this point `nPos` has not been initialized.
+
+To fix this, there are two changes we make. First, we explicitly initialize `nPos` to NULL instead of waiting for the first call to `strchr()` to set it to NULL (which we just demonstrated doesn't always happen). Then, we add logic to verify that `nPos` is *not* NULL before null-terminating `s`.
+
+Of course, this fix revealed another bug. At this point, the program will forever loop, printing the command prompt message over and over again. This is because the `scanf("%s",&c);` in main never has its return value checked. As the input stream has been closed from `[Ctrl+D]`, `scanf()` will not block and will instead immediately return `EOF`.
+
+To fix this issue, we simply add a check on the return value of `scanf()` and terminate the program if the input was EOF.
