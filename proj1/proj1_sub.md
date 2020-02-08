@@ -172,3 +172,9 @@ To fix this, there are two changes we make. First, we explicitly initialize `nPo
 Of course, this fix revealed another bug. At this point, the program will forever loop, printing the command prompt message over and over again. This is because the `scanf("%s",&c);` in main never has its return value checked. As the input stream has been closed from `[Ctrl+D]`, `scanf()` will not block and will instead immediately return `EOF`.
 
 To fix this issue, we simply add a check on the return value of `scanf()` and terminate the program if the input was EOF.
+
+## Question 3
+
+### Part A
+
+![CFG diagram](diagram-3a.png)
