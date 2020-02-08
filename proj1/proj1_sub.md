@@ -204,10 +204,12 @@ Infeasible EPC:
 
 PPC: { [0,1,2,3,7,9,10],
        [0,1,2,4,7,8,10],
-       [0,1,2,5,6,7,8,10] }
+       [0,1,2,5,6,7,8,10],
+       [0,1,2,6,7,8,10]}
 
 Infeasible PPC:
 [0,1,2,3,7,8,10] as it contains [3,7,8] (see above)
-[0,1,2,4,7,9,10] as it contains [4,7,9] (see above)
-[0,1,2,5,6,7,9,10] as it contains [6,7,9] (see above)
+[0,1,2,4,7,9,10] as it contains [4,7,9]
+[0,1,2,5,6,7,9,10] as it contains [6,7,9]
+[0,1,2,6,7,9,10] as it contains [6,7,9]
 ```
