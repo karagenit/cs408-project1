@@ -7,6 +7,19 @@ import java.io.ByteArrayOutputStream;
 
 public class TestM {
 
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+
+    @Before
+    public void setUpStreams() {
+        System.setOut(new PrintStream(outContent));
+    }
+
+    @After
+    public void restoreStreams() {
+        System.setOut(originalOut);
+    }
+
     /*
      * This satisfies node coverage requirements.
      * The function is called with i == 0, which covers nodes [0,1,2].
@@ -22,6 +35,8 @@ public class TestM {
         obj.m("", 0);
         obj.m("a", 0);
         obj.m("ab", 0);
+
+        assertEquals(outContent.toString(), "zero\na\nb\n");
     }
 
     /*
@@ -40,6 +55,8 @@ public class TestM {
         obj.m("a", 0);
         obj.m("ab", 0);
         obj.m("abc", 1);
+
+        assertEquals(outContent.toString(), "zero\na\nb\nb\n");
     }
 
     /*
@@ -75,6 +92,8 @@ public class TestM {
         obj.m("a" , 1);
         obj.m("ab" , 1);
         obj.m("abc" , 1);
+
+        assertEquals(outContent.toString(), "zero\na\nb\nb\nzero\na\nb\nb\n");
     }
 }
 
