@@ -84,7 +84,12 @@ public class CFG {
 	
     public void deleteEdge(int p1, MethodNode m1, ClassNode c1,
 						int p2, MethodNode m2, ClassNode c2) {
-		// ...
+        Node n1 = new Node(p1, m1, c1);
+        Node n2 = new Node(p2, m2, c2);
+
+        if (edges.containsKey(n1)) {
+            edges.get(n1).remove(n2);
+        }
     }
 	
 
