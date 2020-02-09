@@ -3,6 +3,7 @@ import java.util.Map;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.ArrayDeque;
 import org.objectweb.asm.commons.*;
 import org.objectweb.asm.tree.*;
 
