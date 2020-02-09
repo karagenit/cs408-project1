@@ -107,8 +107,12 @@ public class CFG {
             if (n.equals(n2)) {
                 return true;
             }
-            for (Node next : edges.get(n)) {
-                reached.push(next);
+            // Not sure why we have to check contains, but
+            // throws an NPE if we don't...
+            if (edges.containsKey(n)) {
+                for (Node next : edges.get(n)) {
+                    reached.push(next);
+                }
             }
         }
         return false;
