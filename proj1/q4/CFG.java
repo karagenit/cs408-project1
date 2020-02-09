@@ -92,9 +92,24 @@ public class CFG {
         }
     }
 	
-
     public boolean isReachable(int p1, MethodNode m1, ClassNode c1,
 			       int p2, MethodNode m2, ClassNode c2) {
-	// ...
+	    Node n1 = new Node(p1, m1, c1);
+        Node n2 = new Node(p2, m2, c2);
+
+        ArrayDeque<Node> reached = new ArrayDeque<Node>();
+        reached.push(n1);
+
+        // TODO: handle cycles in the graph
+        while (!reached.isEmpty()) {
+            Node n = reached.pop();
+            if (n.equals(n2)) {
+                return true;
+            }
+            for (Node next : edges.get(n)) {
+                reached.push(next);
+            }
+        }
+        return false;
     }
 }
