@@ -13,9 +13,9 @@ Caleb Smith (smit3484@purdue.edu)
 
 The results of C and Java are (in a mathematical sense) more "correct" in that they return the actual remainder of the number after division. `-5 / 2 = -2`, `-2 * 2 = -4`, `-5 - -4 = -1`. However, languages like Perl and Python decided that for most use cases having a positive number returned is generally more useful and makes the programmer's life easier.
 
-There are numerous ways to handle this discrepancy. First, scripting languages that do modulo "incorrectly" often have a way of performing the calculation in a "proper" way (for example, by using the `Decimal` class in python). Use of these classes could be required by a coding standard and enforced by a static linter.
+There are numerous ways to handle this discrepancy. Properly unit testing for the results of functions that use modulo operations can help ensure a developer doesn't mistakenly expect the modulo operation to work differently than it does in the language they are using.
 
-TODO: second way to handle.
+Additionally, scripting languages that do modulo "incorrectly" often have a way of performing the calculation in a "proper" way (for example, by using the `Decimal` class in python). Use of these classes could be required by a coding standard and enforced by a static linter.
 
 ## Question 2
 
@@ -167,11 +167,11 @@ Segmentation fault
 
 By pressing `[Ctrl+D]` before typing any input, we force `fgets()` to return `NULL` upon its first call inside `fgets_enhanced()`. Thus, it skips the majority of the function (contained within the `else` block after checking whether `fgets()` returned `NULL`). Execution reaches the line `s[nPos-s] = 0;` however at this point `nPos` has not been initialized.
 
-To fix this, there are two changes we make. First, we explicitly initialize `nPos` to NULL instead of waiting for the first call to `strchr()` to set it to NULL (which we just demonstrated doesn't always happen). Then, we add logic to verify that `nPos` is *not* NULL before null-terminating `s`.
+To fix this, there are two changes we make. First, we explicitly initialize `nPos` to `NULL` instead of waiting for the first call to `strchr()` to set it to `NULL` (which we just demonstrated doesn't always happen). Then, we add logic to verify that `nPos` is *not* `NULL` before null-terminating `s`.
 
 Of course, this fix revealed another bug. At this point, the program will forever loop, printing the command prompt message over and over again. This is because the `scanf("%s",&c);` in main never has its return value checked. As the input stream has been closed from `[Ctrl+D]`, `scanf()` will not block and will instead immediately return `EOF`.
 
-To fix this issue, we simply add a check on the return value of `scanf()` and terminate the program if the input was EOF.
+To fix this issue, we simply add a check on the return value of `scanf()` and terminate the program if the input was `EOF`.
 
 ## Question 3
 
