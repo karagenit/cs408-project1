@@ -221,3 +221,25 @@ Infeasible PPC:
 [0,2,5,6,7,9,10] as it contains [6,7,9]
 [0,2,6,7,9,10] as it contains [6,7,9]
 ```
+
+## Question 4
+
+### addNode()
+
+The test class does satisfy both NC and EC for the `addNode()` method. The test method `addNode()` covers all nodes, and the `addNode_duplicate()` method covers the edge which skips the body of the if statement.
+
+### addEdge()
+
+With the way I've written my implementation of `addEdge()` there are no conditional branches, so the test method `addEdge()` satisfies both NC and EC.
+
+### deleteNode()
+
+The test class satisfies both NC and EC. There are two branches of execution, one where the node exists and one where the node does not exist. The two test methods, `deleteNode()` and `deleteNode_missing()` together satisfy both NC and EC.
+
+### deleteEdge()
+
+The test class satisfies both NC and EC. Again, there are only two branches of execution, one where the map of edges contains a set entry for the first node and one where the map does not. The test methods `deleteEdge()` and `deleteEdge_missing()` together satisfy both NC and EC by covering both of these paths of execution.
+
+### isReachable()
+
+The test class satisfies both NC and EC. The test method `reachable_true()` executes the edges for all of the "true" outcomes on the two if statements and will have to iterate inside the for loop at least once (since there has to be nodes following the first node if the two nodes are connected). It also covers both branches of the first if statement, as on the first iteration the two are not equal but on some later iteration they are. The other three test methods cover the "return false" node. The test method `reachable_missingSrc()` covers the edge for a `false` result on the second if statement, as the node with a negative source code line will not exist in the map of edges. The test method `reachable_unreachable()` covers the edge where the node exists in the map of edges but has no nodes after it, so the second if statement results in a `true` result but the body of the for loop is never executed (this edge is executed once the end of the CFG is reached but the specified end node is never found).
