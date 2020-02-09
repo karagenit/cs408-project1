@@ -63,13 +63,13 @@ public class CFG {
         addNode(p1, m1, c1);
         addNode(p2, m2, c2);
 
-        // TODO: check if edge already exists?
+        // Do we need to check if the edge already exists?
+        // The lab doc doesn't explicitly say there
+        // shouldn't be duplicate edges...
 
         // Add an edge in the edge map for n1 -> n2
         // edges.get(n1) should definitely succeed.
         edges.get(n1).add(n2);
-
-        // TODO: should we also add n2 -> n1? These are just unidirectional right?
     }
 	
 	public void deleteNode(int p, MethodNode m, ClassNode c) {
@@ -101,7 +101,8 @@ public class CFG {
         ArrayDeque<Node> reached = new ArrayDeque<Node>();
         reached.push(n1);
 
-        // TODO: handle cycles in the graph
+        // Do we need to be able to handle cycles in the graph?
+        // This queue solution would loop forever.
         while (!reached.isEmpty()) {
             Node n = reached.pop();
             if (n.equals(n2)) {
