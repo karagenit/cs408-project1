@@ -72,7 +72,14 @@ public class CFG {
     }
 	
 	public void deleteNode(int p, MethodNode m, ClassNode c) {
-		// ...
+        Node n = new Node(p, m, c);
+	    if (nodes.contains(n)) {
+            nodes.remove(n);
+            edges.remove(n);
+            edges.forEach((k, v) -> {
+                v.remove(n);
+            });
+        }
     }
 	
     public void deleteEdge(int p1, MethodNode m1, ClassNode c1,
