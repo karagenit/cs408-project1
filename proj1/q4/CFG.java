@@ -55,7 +55,20 @@ public class CFG {
 
     public void addEdge(int p1, MethodNode m1, ClassNode c1,
 			int p2, MethodNode m2, ClassNode c2) {
-	// ...
+	    Node n1 = new Node(p1, m1, c1);
+        Node n2 = new Node(p2, m2, c2);
+
+        // Ensure these nodes actually exist before we create the edges.
+        addNode(p1, m1, c1);
+        addNode(p2, m2, c2);
+
+        // TODO: check if edge already exists?
+
+        // Add an edge in the edge map for n1 -> n2
+        // edges.get(n1) should definitely succeed.
+        edges.get(n1).add(n2);
+
+        // TODO: should we also add n2 -> n1? These are just unidirectional right?
     }
 	
 	public void deleteNode(int p, MethodNode m, ClassNode c) {
